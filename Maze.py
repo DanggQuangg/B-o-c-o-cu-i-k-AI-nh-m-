@@ -1424,7 +1424,10 @@ def main():
     def run_forward_check():
         set_auto_path("ForwardCheck",
                   forward_checking_path(grid, (car.r, car.c), goal, depth_limit=ROWS*COLS, fuel_budget=fuel, on_fail=log))
-    def run_belief(): set_auto_path("Belief (Conformant)", belief_conformant_path(grid, (car.r, car.c), goal, fuel_budget=fuel, init_radius=1))
+    def run_belief():
+        # Bạn có thể chỉnh init_radius tuỳ mong muốn bất định ban đầu
+        set_auto_path("Belief (Conformant)",
+            belief_conformant_path(grid, (car.r, car.c), goal, fuel_budget=fuel, init_radius=0, strict_goal_all=False))
     def run_dfs(): set_auto_path("DFS", dfs_path(grid, (car.r, car.c), goal, fuel_budget=fuel))
     def run_greedy(): set_auto_path("Greedy", greedy_best_first_path(grid, (car.r, car.c), goal, fuel_budget=fuel))
 
