@@ -1,147 +1,178 @@
-Trình mô phỏng Thuật toán Tìm đường AI (AI Pathfinding Visualizer)
+# BÀI TẬP LỚN NHÓM 4 MÔN TRÍ TUỆ NHÂN TẠO
+## Maze Game - 15 Thuật toán AI
 
-Đây là một dự án Python sử dụng thư viện Pygame để mô phỏng và trực quan hóa hoạt động của nhiều thuật toán tìm đường trong lĩnh vực Trí tuệ Nhân tạo. Người dùng có thể điều khiển một chiếc xe vượt qua một bản đồ địa hình 2D với các độ cao khác nhau, đồng thời phải đối mặt với các ràng buộc về nhiên liệu và độ dốc.
+> ** Trải nghiệm game Maze với 15 thuật toán AI tiên tiến!**
 
-Tính năng chính
+**Nhóm thực hiện:**  
+- **Phạm Minh Khánh** - MSSV: 23110114 
+- **Phạm Đăng Quang** - MSSV: 23110143  
+- **Trần Đức Trường** - MSSV: 23110164  
 
-Bản đồ địa hình tương tác: Một lưới ô vuông nơi mỗi ô có độ cao riêng, ảnh hưởng đến chi phí di chuyển.
+**Lớp:** 251ARIN330585_04CLC  
+**Môn học:** Trí tuệ nhân tạo  
+**Giảng viên:** Phan Thị Huyền Trang  
 
-Hệ thống ràng buộc thực tế:
+---
 
-Nhiên liệu (Fuel): Mỗi bước di chuyển tiêu tốn một lượng xăng nhất định.
+## THÔNG TIN BÀI TẬP
 
-Độ dốc (Slope): Xe không thể di chuyển giữa hai ô có chênh lệch độ cao quá lớn.
+### Yêu cầu đề bài:
+Triển khai game Maze với AI sử dụng 15 thuật toán AI khác nhau bao gồm:
+- **Tìm kiếm không có thông tin**: BFS, DFS, UCS, IDS
+- **Tìm kiếm có thông tin**: Greedy, A*
+- **Tìm kiếm cục bộ**: Hill Climbing, Simulated Annealing, Beam Search
+- **Tìm kiếm niềm tin**: Belief-Conformant Search, Belief-Partial Search
+- **Tìm kiếm CSP**: Backtracking, Forward Checking, AC-3
+- **Tìm kiếm planning**: AND-OR Planning
 
-Điều khiển đa dạng:
+### Mục tiêu game:
+Maze Game phải di chuyển trong mê cung địa hình có độ cao thay đổi, với mục tiêu là tìm đường đến đích (Goal) trong khi:
+- Tối ưu hóa lượng nhiên liệu sử dụng — mỗi bước di chuyển tiêu hao nhiên liệu tùy theo độ dốc giữa hai ô.
+- Tránh các ô hố (X) hoặc địa hình quá dốc vượt quá giới hạn di chuyển.
+- Tự động tìm đường bằng các thuật toán trí tuệ nhân tạo (AI) khác nhau để so sánh hiệu quả giữa các hướng tiếp cận.
+- Đánh giá hiệu quả thuật toán qua các tiêu chí: độ dài đường đi, lượng nhiên liệu tiêu hao, và khả năng đạt đích.
 
-Thủ công: Người dùng có thể tự lái xe bằng các phím mũi tên hoặc WASD.
 
-Tự động: Chọn một thuật toán từ danh sách, và xe sẽ tự động di chuyển theo đường đi được tìm thấy.
+## HƯỚNG DẪN CHẠY CHƯƠNG TRÌNH
 
-Bộ sưu tập thuật toán AI phong phú: Triển khai hơn 15 thuật toán tìm đường và giải quyết vấn đề kinh điển.
+### Bước 1: Kiểm tra yêu cầu hệ thống
+```bash
+# Kiểm tra Python (cần Python 3.8+)
+python --version
 
-Giao diện trực quan:
+# Kiểm tra pip
+pip --version
+```
 
-Thanh bên trái chứa các nút để kích hoạt thuật toán.
-
-Khu vực trung tâm hiển thị bản đồ, xe, và đường đi đã qua.
-
-Thanh bên phải ghi lại nhật ký (log) về các hành động và kết quả tìm đường.
-
-Tùy chỉnh dễ dàng: Bản đồ (RAW_MAP) và các tham số vật lý (chi phí di chuyển, độ dốc tối đa) có thể dễ dàng thay đổi ngay trong mã nguồn.
-
-Yêu cầu
-
-Python 3.x
-
-Thư viện Pygame
-
-Cài đặt & Chạy chương trình
-
-Cài đặt Pygame: Mở terminal hoặc command prompt và chạy lệnh sau:
-
+### Bước 2: Cài đặt thư viện cần thiết
+```bash
+# Cài đặt Pygame cho game engine
 pip install pygame
 
+# Nếu gặp lỗi, thử:
+pip install pygame --upgrade
+```
 
-Chuẩn bị tài nguyên (Assets):
-Chương trình sẽ hoạt động tốt nhất nếu có các file hình ảnh sau trong cùng thư mục với file Python:
+##  CÁCH CHƠI VÀ ĐIỀU KHIỂN
 
-car_up.png, car_down.png, car_left.png, car_right.png (Hình ảnh xe ở 4 hướng)
+### Khởi động:
+- **Khi chạy game**: nhập số xăng ban đầu (ví dụ 80 hoặc 75.5) rồi nhấn Enter để bắt đầu.
 
-h0.png, h1.png, h2.png, h3.png, h4.png (Hình ảnh cho các loại địa hình theo độ cao)
+### Điều khiển cơ bản:
+- **ESC**: Thoát game
+- **R*: Reset về điểm Start và khôi phục lượng xăng ban đầu
+- **↑ ↓ ← → hoặc W A S D**: Di chuyển thủ công từng bước (nếu muốn thử tay)
 
-water.png (Hình ảnh cho các ô "hố" - 'X')
-
-home.png (Hình ảnh cho ô đích)
-
-Lưu ý: Nếu không tìm thấy các file ảnh này, chương trình vẫn sẽ chạy bằng cách vẽ các hình khối đơn giản để thay thế.
-
-Chạy chương trình:
-Lưu mã nguồn vào một file (ví dụ: main.py) và chạy nó từ terminal:
-
-python main.py
+### Chạy tự động bằng thuật toán: 
+- Ở panel bên trái, bấm vào nút thuật toán để game tự tìm đường và chạy theo đường đó:
 
 
-Cách sử dụng
 
-Nhập nhiên liệu: Khi chương trình khởi động, một màn hình sẽ yêu cầu bạn nhập vào lượng xăng ban đầu. Hãy nhập một số dương và nhấn Enter.
+##  15 THUẬT TOÁN AI ĐÃ TRIỂN KHAI
 
-Giao diện chính:
+###  TÌM KIẾM KHÔNG CÓ THÔNG TIN
 
-Bên trái: Bảng điều khiển chứa danh sách các thuật toán. Nhấn vào một nút để yêu cầu thuật toán đó tìm đường đi từ vị trí hiện tại của xe.
+| STT | Thuật toán | Mô tả & Ưu điểm | Demo |
+|-----|------------|-----------------|------|
+| 1 | **BFS** - Breadth-First Search | Tìm đường đi ngắn nhất | ![BFS Demo](images/BFS.gif) |
+| 2 | **DFS** - Depth-First Search | Khám phá sâu, tiết kiệm bộ nhớ | ![DFS Demo](images/DFS.gif) |
+| 3 | **IDS** - Iterative Deepening Search | Kết hợp ưu điểm BFS & DFS | ![IDS Demo](images/IDS.gif) |
 
-Giữa: Bản đồ trò chơi.
+###  TÌM KIẾM CÓ THÔNG TIN
 
-Bên phải: Bảng ghi lại trạng thái, thông báo kết quả tìm đường, chi phí di chuyển, và các lỗi (nếu có).
+| STT | Thuật toán | Mô tả & Ưu điểm | Demo |
+|-----|------------|-----------------|------|
+| 4 | **UCS** - Uniform Cost Search | Tối ưu chi phí đường đi | ![UCS Demo](images/UCS.gif) |
+| 5 | **Greedy** - Greedy Best-First | Nhanh nhưng không tối ưu | ![Greedy Demo](images/Greedy.gif) |
+| 6 | **A*** - A-star Search | Tối ưu và hiệu quả nhất | ![A* Demo](images/A_SAO.gif) |
 
-Điều khiển thủ công:
+###  TÌM KIẾM CỤC BỘ
 
-Sử dụng các phím mũi tên (Lên, Xuống, Trái, Phải) hoặc W, A, S, D để di chuyển xe.
+| STT | Thuật toán | Mô tả & Ưu điểm | Demo |
+|-----|------------|-----------------|------|
+| 7 | **Hill Climbing** | Leo đồi - đơn giản nhưng có thể bị kẹt | ![Hill Climbing Demo](images/Hill.gif) |
+| 8 | **Simulated Annealing** | Luyện kim mô phỏng - thoát cực trị | ![Simulated Annealing Demo](images/Simulated.gif) |
+| 9 | **Beam Search** | Tìm kiếm chùm - cân bằng tốc độ/chất lượng | ![Beam Search Demo](images/Beam.gif) |
 
-Chạy thuật toán:
 
-Nhấn vào tên một thuật toán ở bảng bên trái.
+###  TÌM KIẾM NIỀM TIN
 
-Chương trình sẽ tìm đường đi. Nếu thành công, xe sẽ tự động di chuyển theo lộ trình đã vạch ra.
+| STT | Thuật toán | Mô tả & Ưu điểm | Demo |
+|-----|------------|-----------------|------|
+| 10 | **Belief Search** | Tìm kiếm trên tập niềm tin | ![Genetic Demo](images/Belief.gif) |
+| 11 | **Belief-Partial** | Tìm kiếm trên tập niềm tin xác định một phần | ![Genetic Demo](images/Belief-partial.gif) |
 
-Kết quả và độ dài đường đi sẽ được in ra bảng trạng thái.
+###  TÌM KIẾM CSP (Constraint Satisfaction)
 
-Các phím tắt:
+| STT | Thuật toán | Mô tả & Ưu điểm | Demo |
+|-----|------------|-----------------|------|
+| 12 | **Backtracking** | Quay lui - giải ràng buộc cơ bản | ![Backtracking Demo](images/Backtracking.gif) |
+| 13 | **Forward Checking** | Kiểm tra tiến - CSP hiệu quả | ![Forward Checking Demo](images/FowardChecking.gif) |
+| 14 | **AC-3** - Arc Consistency | Giảm miền giá trị, tăng hiệu quả | ![AC-3 Demo](images/AC3.gif) |
 
-R: Reset lại toàn bộ màn chơi (đưa xe về vị trí xuất phát, phục hồi nhiên liệu).
+###  TÌM KIẾM PLANNING
 
-Esc: Thoát khỏi chương trình.
+| STT | Thuật toán | Mô tả & Ưu điểm | Demo |
+|-----|------------|-----------------|------|
+| 15 | **AND-OR Planning** | Lập kế hoạch có điều kiện | ![AND-OR Demo](images/ANDOR.gif) |
 
-Các thuật toán được triển khai
+---
 
-Chương trình mô phỏng một loạt các thuật toán từ cơ bản đến nâng cao.
+## 🎯 CÁCH ĐÁNH GIÁ VÀ KIỂM TRA
 
-Tìm kiếm thông thường (Uninformed/Informed Search)
+### Test cơ bản:
+1. **Chạy game**: `python GameMaze.py` - Nhập xăng ban đầu → kiểm tra panel trái (nút + fuel), mê cung giữa, log phải.
+2. **Thuật toán**: Bấm nút ở panel trái (A*, UCS, BFS, …) → xe tự chạy nếu đủ xăng.
+3. **Điều khiển tay**: W/A/S/D hoặc ↑/↓/←/→ (thử từng bước).
+4. **Reset**: R để về S và khôi phục xăng.
 
-A*: Thuật toán tìm kiếm ưu tiên tốt nhất, sử dụng heuristic để tối ưu.
+### Test chi tiết từng thuật toán:
+1. **A* / UCS / Greedy / Beam**: so chi phí (xăng tiêu hao), độ dài đường, thời gian.
+2. **BFS / DFS**: đối chiếu hành vi trên bản đồ có trọng số (không tối ưu chi phí).
+3. **Hill / SA**: kiểm tra kẹt cục bộ (Hill) vs khả năng thoát kẹt (SA).
+4. **Forward Checking**: loại sớm nhánh “chết” khi dốc/xăng gắt.
+5. **AND–OR (Uncertain)**: so hành động dự định vs kết quả thực trong log.
+6. **Belief (Conformant) / Belief-Partial**: so tốc độ vs mức bảo đảm (toàn bộ trạng thái).
+### Metrics đánh giá:
+- **Thành công**: đến G (✔/✖).
+- **Tổng chi phí/xăng tiêu hao**: (càng thấp càng tốt).
+- **Độ dài đường đi**: số ô
 
-UCS (Uniform Cost Search): Tìm đường đi với tổng chi phí thấp nhất.
+---
 
-BFS (Breadth-First Search): Tìm đường đi ngắn nhất về số bước.
 
-IDS (Iterative Deepening Search): Kết hợp ưu điểm của BFS và DFS.
 
-DFS (Depth-First Search): Tìm kiếm theo chiều sâu.
 
-Greedy Best-First Search: Tìm kiếm dựa hoàn toàn vào heuristic.
+##  TÍNH NĂNG NỔI BẬT
 
-Beam Search: Một biến thể của BFS chỉ giữ lại một số trạng thái tốt nhất ở mỗi bước.
+###  Giao diện game:
+- **Graphics**: Lưới mê cung auto-fit màn hình, tile theo độ cao h0–h5, hố X (nước), đích G
+- **Animation**: Xe đổi hướng theo sprite car_up / car_right / car_down / car_left, chấm visited hiển thị lộ trình
+- **Particle Effects**: ô hiện tại, viền ô, hiệu ứng cảnh báo khi xăng thấp
+- **UI**: Thanh trái nút thuật toán, thanh phải log realtime, đồng hồ nhiên liệu dạng cột
 
-Tìm kiếm cục bộ (Local Search)
+###  AI System:
+- **15 thuật toán**: Hoàn chỉnh từ cơ bản đến nâng cao
+- **Comparison mode**: So sánh hiệu quả các thuật toán
 
-Hill Climbing: Luôn di chuyển đến hàng xóm tốt nhất (gần đích hơn).
+###  Analytics:
+- **Log realtime**: Mỗi bước ghi chi phí xăng, vị trí, trạng thái (thành công/thất bại)
+- **Algorithm stats**: Độ dài path tìm được, khả thi theo fuel_budget
+- **Level progression**: So sánh bằng số bước di chuyển và tổng xăng tiêu hao hiển thị trực tiếp
 
-Simulated Annealing (Luyện kim mô phỏng): Cho phép các bước đi "tệ hơn" một cách có xác suất để thoát khỏi các cực tiểu cục bộ.
+---
 
-Ràng buộc & Quay lui (Constraint & Backtracking)
+---
 
-AC-3 Reduce: Thuật toán thỏa mãn ràng buộc để loại bỏ các ô không hợp lệ khỏi bản đồ trước khi tìm kiếm.
+##  LIÊN HỆ HỖ TRỢ
 
-Forward Checking: Tìm kiếm quay lui kết hợp "nhìn trước" để cắt tỉa các nhánh vô vọng.
+Nếu gặp vấn đề khi chạy code hoặc cần giải thích thêm về thuật toán:
+- **Email nhóm**: [23110143@student.hcmute.edu.vn]
 
-Backtracking: Thuật toán quay lui cơ bản.
+**Cảm ơn cô đã xem xét bài tập! **
 
-Lập kế hoạch (Planning)
 
-Uncertain Action (AND-OR Search): Lập kế hoạch cho các hành động có kết quả không chắc chắn (ví dụ: đi thẳng nhưng có thể bị trượt sang trái).
 
-Belief Search (Conformant Planning): Tìm một kế hoạch chắc chắn thành công khi vị trí ban đầu không hoàn toàn chắc chắn.
+*Bài tập này được thực hiện với mục đích học tập và nghiên cứu.*
 
-Belief-Partial Search: Một biến thể linh hoạt hơn của Belief Search, cho phép hành động thành công với một tỷ lệ nhất định.
-
-Tùy chỉnh
-
-Bạn có thể dễ dàng thay đổi bản đồ bằng cách chỉnh sửa biến RAW_MAP ở đầu file mã nguồn.
-
-"S": Điểm xuất phát (Start).
-
-"G": Điểm đích (Goal).
-
-"X": Ô hố, không thể đi vào.
-
-0-5: Các số nguyên đại diện cho độ cao của địa hình.
+** CHÚC CÔ CHẤM BÀI VUI VẺ VÀ TRẢI NGHIỆM GAME THÚ VỊ! **
