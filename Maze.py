@@ -67,6 +67,14 @@ RAW_MAP = [
     [ 3,  "X",  2, "X",  "X",  2,  "X",  "X",  0,  "X", "X",  3,  4, "X",  2,  3,  "X",  "X",  1,  1],
     [ 2,  2,  4, 3, 5, 4, 3, 2, 1, 2, "X",  3,  1, "X",  5,  4,  4,  "X",  2,  5],
 ]
+
+# RAW_MAP = [
+#     ["S", 2, 5, 4, 3],
+#     [ 1,  2, "X", 3, 5],
+#     [ 3,  4,  2,  1, 5],
+#     [ 2,  "X", "X", 3, 4],
+#     [ 5, 5, 1, "X", "G"]
+# ]
 ROWS = len(RAW_MAP)
 COLS = len(RAW_MAP[0])
 
@@ -389,7 +397,7 @@ def a_star_path(grid, start, goal, fuel_budget):
     alpha = 0.2
     def h(rc):
         r, c = rc
-        return abs(r - goal[0]) + abs(c - goal[1]) + (alpha *(grid[rr][cc]["h"]) - grid[goal[0]][goal[1]]["h"])
+        return abs(r - goal[0]) + abs(c - goal[1]) + abs(alpha *(grid[rr][cc]["h"]) - grid[goal[0]][goal[1]]["h"])
 
     pq = PriorityQueue()
     pq.put((0.0, start))              
@@ -402,7 +410,6 @@ def a_star_path(grid, start, goal, fuel_budget):
         if cur in closed:
             continue
         closed.add(cur)
-
         if cur == goal:
             path = [cur]
             while cur in came_from:
@@ -410,7 +417,6 @@ def a_star_path(grid, start, goal, fuel_budget):
                 path.append(cur)
             path.reverse()
             return path
-
         r, c = cur
         for rr, cc in neighbors4(r, c):       
             nxt = (rr, cc)
@@ -992,8 +998,7 @@ def belief_conformant_path(
         # Lỏng hơn: tất cả trùng nhau và chính là goal
         return (len(B) == 1 and next(iter(B)) == goal)
 
-    # ---- Dijkstra/UCS trên belief
-    from queue import PriorityQueue
+    # ---- UCS trên belief
     pq = PriorityQueue()
     pq.put((0.0, B0))
     g_cost = {B0: 0.0}
@@ -1313,11 +1318,30 @@ def main():
     pygame.display.set_caption("Maze")
     grid, start, goal = find_start_goal(RAW_MAP)
 
-    play_w = COLS * (CELL_SIZE + MARGIN) + MARGIN
+    '''play_w = COLS * (CELL_SIZE + MARGIN) + MARGIN
     play_h = ROWS * (CELL_SIZE + MARGIN) + MARGIN
     width = LEFTBAR_W + play_w + SIDEBAR_W
     height = max(play_h + 80, 560)
+    screen = pygame.display.set_mode((width, height))'''
+
+    # Kích thước lưới thật
+    grid_w = COLS * (CELL_SIZE + MARGIN) + MARGIN
+    grid_h = ROWS * (CELL_SIZE + MARGIN) + MARGIN
+
+    # Kích thước play area tối thiểu (để map 5x5 không làm cửa sổ quá thấp)
+    MIN_PLAY_W, MIN_PLAY_H = 520, 520       # tùy chỉnh nếu muốn
+    MIN_WIN_H = 900                          # chiều cao cửa sổ tối thiểu để thấy hết nút
+
+    play_w = max(grid_w, MIN_PLAY_W)
+    play_h = max(grid_h, MIN_PLAY_H)
+
+    width  = LEFTBAR_W + play_w + SIDEBAR_W
+    height = max(play_h + 80, MIN_WIN_H)
     screen = pygame.display.set_mode((width, height))
+
+    # Offset để căn giữa lưới trong play area
+    PLAY_LEFT_OFFSET = LEFTBAR_W + (play_w - grid_w) // 2
+    PLAY_TOP_OFFSET  = (play_h - grid_h) // 2
 
     font = pygame.font.SysFont(FONT_NAME, 18)
     big_font = pygame.font.SysFont(FONT_NAME, 28, bold=True)
@@ -1371,6 +1395,15 @@ def main():
     andor_stall_limit = 5
 
     clock = pygame.time.Clock()
+    '''def cell_rect_local(r, c):
+        ox = LEFTBAR_W
+        x = ox + MARGIN + c*(CELL_SIZE + MARGIN)
+        y = 0 + MARGIN + r*(CELL_SIZE + MARGIN)
+        return pygame.Rect(x, y, CELL_SIZE, CELL_SIZE)'''
+    def cell_rect_local(r, c):
+        x = PLAY_LEFT_OFFSET + MARGIN + c * (CELL_SIZE + MARGIN)
+        y = PLAY_TOP_OFFSET  + MARGIN + r * (CELL_SIZE + MARGIN)
+        return pygame.Rect(x, y, CELL_SIZE, CELL_SIZE)
 
     def cell_rect_local(r, c):
         ox = LEFTBAR_W
